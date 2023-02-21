@@ -5,6 +5,7 @@ server = Flask(__name__)
 
 def generate_response(prompt):
     try:
+
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
@@ -24,6 +25,10 @@ def generate_response(prompt):
 @server.route("/chat")
 def home():
     return render_template("chat.html")
+
+@server.route("/")
+def chat_wx():
+    return render_template("chat_wx.html")
 
 @server.route("/chat/get")
 def get_bot_response():

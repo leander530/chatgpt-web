@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- <link rel="stylesheet" href="./css/style.css"> -->
+
+    <title>ChatChat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .wx {
+            margin: 0 auto;
+            padding: 0;
+            width: 600px;
+            height: 100%;
+            background: #eee;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: #e2e2e2;
+            border: 1px solid #555;
+            box-sizing: border-box;
+        }
+
+        footer {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            font-size: 30px;
+            background: #eee;
+        }
+
+        footer button {
+            width: 100px;
+            font-size: 30px;
+            color: #333;
+            outline: none;
+            background: #00af00;
+            border: none;
+            border-radius: 15px;
+        }
+
+        footer input {
+            flex: 1 1 auto;
+            box-sizing: border-box;
+            margin: 0 5px;
+            outline: none;
+            border: 1px solid #555;
+            background: #fafafa;
+            border-radius: 15px;
+        }
+
+        main {
+            flex: 1 1 auto;
+            background: #eee;
+            clear: both;
+        }
+
+        main div {
+            clear: both;
+            max-width: 85%;
+            margin: 5px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        main div div {
+            display: inline-block;
+        }
+
+        main div .h {
+            width: 25px;
+            height: 25px;
+        {#background: #000;#}
+        }
+
+        main div .t {
+            padding: 5px;
+            font-size: 20px;
+            position: relative;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        main div .t::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: 5px;
+            transform: rotate(45deg);
+        }
+
+        main .m {
+            float: right;
+        }
+
+        main .m .t {
+            background: #00af00;
+        }
+
+        main .m .t::after {
+            background: #00af00;
+            bottom: -5px;
+        }
+
+        main .y {
+            float: left;
+        }
+
+        main .y .t {
+            background: #e2e2e2;
+        }
+
+        main .y .t::after {
+            background: #e2e2e2;
+            left: -5px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wx">
+    <!--  -->
+    <header>
+        <div>ChatChat</div>
+    </header>
+    <!--  -->
+    <main id="chatlog">
+        {#        <div class="m">#}
+        {#            <div class="t">你三连了吗?</div>#}
+        {#            <div class="h"></div>#}
+        {#        </div>#}
+        {#        <div class="y">#}
+        {#            <div class="h"></div>#}
+        {#            <div class="t">没有。</div>#}
+        {#        </div>#}
+
+
+    </main>
+    <footer>
+        <input type="text" id="chatinput">
+        <button type="button" id="sendbutton">发送</button>
+    </footer>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="processModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="modal-title">请耐心等待，仙人正在为您指路...</h4>
+                <div class="progress">
+                    <div id="process-bar" class="progress-bar progress-bar-striped active" role="progressbar"
+                         aria-valuenow="45"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                        <span class="sr-only">45% Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add your JavaScript here
+    document.getElementById("sendbutton").addEventListener("click", function () {
+        //let loading = document.getElementById('loading');
+        //loading.style.display = 'block';
+        // Get the user's message from the input field
+
+        var message = document.getElementById("chatinput").value;
+        if (message == "") {
+            alert("发送内容不能为空！");
+            return false;
+        }
+
+        //先显示问题
+        createMyMsg(message);
+        //弹出模态框
+        $('#processModal').modal('show');
+
+        // Clear the input field
+        document.getElementById("chatinput").value = "";
+        // Send the message to the chatbot
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/chat/get?msg=" + message);
+        xhr.send();
+        xhr.onload = function () {
+            createAiMsg(xhr.responseText);
+            $("#process-bar").attr("style", "width: 100%");
+            $('#processModal').modal('hide');
+            $("#process-bar").attr("style", "width: 45%");
+            var chatlog = document.getElementById("chatlog");
+            chatlog.scrollTop = chatlog.scrollHeight;
+        }
+    });
+
+    function createMyMsg(msg) {
+        var div1 = document.createElement("div");
+        div1.classList.add("m")
+        var subdiv1 = document.createElement("div")
+        subdiv1.classList.add("t")
+        subdiv1.innerHTML = msg
+        var subdiv2 = document.createElement("div")
+        subdiv2.classList.add("h")
+        subdiv2.innerHTML = "<i class='fa fa-user-circle-o fa-2x' aria-hidden='true'></i>"
+        div1.appendChild(subdiv1)
+        div1.appendChild(subdiv2)
+        var chatlog = document.getElementById("chatlog")
+        chatlog.appendChild(div1)
+    }
+
+    function createAiMsg(msg) {
+        var div1 = document.createElement("div");
+        div1.classList.add("y")
+        var subdiv1 = document.createElement("div")
+        subdiv1.classList.add("h")
+        subdiv1.innerHTML = "<i class='fa fa-github-alt fa-2x' aria-hidden='true'></i>"
+        var subdiv2 = document.createElement("div")
+        subdiv2.innerHTML = msg
+        subdiv2.classList.add("t")
+        div1.appendChild(subdiv1)
+        div1.appendChild(subdiv2)
+        var chatlog = document.getElementById("chatlog")
+        chatlog.appendChild(div1)
+    }
+</script>
+</body>
+
+</html>
