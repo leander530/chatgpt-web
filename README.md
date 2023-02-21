@@ -1,4 +1,4 @@
-2023.2.21 `本人只是增加了一个微信风格的UI`
+2023.2.21 `本人只是增加了一个微信风格的UI，自己重新build一个镜像即可`
 >原作者项目地址：[slippersheepig/chatgpt-web](https://github.com/slippersheepig/chatgpt-web)
 
 2023.2.20 `重构关键代码，内置本人使用的UI，支持查看历史对话记录`
