@@ -5,7 +5,7 @@ server = Flask(__name__)
 
 def generate_response(prompt):
     try:
-
+        # openai.api_key ="你自己的API KEY"   # 开发测试时去掉注释
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
