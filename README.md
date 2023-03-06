@@ -1,3 +1,5 @@
+2023.3.6 `增加了gpt-3.5-turbo模型调用，效果与官方chatgpt接近`
+
 2023.2.24 `增加了ChatYuan调用和UI，体验下国产货`
 
 2023.2.21 `本人只是增加了一个微信风格的UI，重新build一个镜像即可`
@@ -39,4 +41,6 @@ services:
 ```
 - 输入`docker-compose up -d`即启动成功
 ## 注意事项
-- 访问地址为http://ip:port/chat
+- gpt3.5访问地址：http://ip:port
+- 原作者访问地址：http://ip:port/chat
+- YuanChat访问地址：http://ip:port/yuan
